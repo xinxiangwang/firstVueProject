@@ -42,6 +42,16 @@ Vue.filter('relTime', function (time) {
   return Moment(time).fromNow()
 })
 
+// 定义去掉文章冗长标题过滤器
+Vue.filter('cutTitle', function (title, num) {
+  // return title.replace(/（.*）|\(.*\)/, '') 只去除括号里不够 shit!
+  if (title.length < num) {
+    return title
+  } else {
+    return title.substr(0, num - 1) + '...'
+  }
+})
+
 // 是否为生产环境
 Vue.config.productionTip = false
 

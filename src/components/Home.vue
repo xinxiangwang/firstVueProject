@@ -34,20 +34,26 @@ export default {
         {
           title: '新闻资讯',
           className: 'back-news',
-          route: {name: 'NewsList', query: {categoryId: 0}}
+          route: {
+            name: 'NewsList',
+            query: { categoryId: 0 }
+          }
         },
         {
           title: '图文分享',
           className: 'back-picShare',
           route: {
             name: 'PhotoList',
-            query: { categoryId: 0 }
+            params: { categoryId: 0 }
           }
         },
         {
           title: '商品展示',
           className: 'back-goods',
-          route: {name: 'Home'}
+          route: {
+            name: 'GoodsShow',
+            query: { page: 1 }
+          }
         },
         {
           title: '留言反馈',
