@@ -1,25 +1,28 @@
 <template>
  <div class="tmpl">
    <nav-bar title="商品列表"></nav-bar>
-   <ul>
-     <li v-for="(item, index) in goods" :key="index">
-       <a href="" :title="item.BookName">
-         <img :src="item.BookPic" alt="">
-         <a class="title" href="javascript:void(0);">{{ item.BookName | cutTitle(10) }}</a>
-         <div class="desc">
-           <div class="sell">
-             <span>{{ item.BookMprice }}</span><s>{{ item.BookPrice }}</s>
-           </div>
-           <div class="detail">
-             <div class="hot">热卖中</div>
-           </div>
-           <div class="count">
-             销量：{{ item.BookDealmount}}
-           </div>
-         </div>
-       </a>
-     </li>
-   </ul>
+    <mt-loadmore :bottom-method="loadBottom" @bottom-status-change="handleBottomChange"
+    :bottom-all-loaded="allLoaded" :auto-fill="autoFill" ref="loadmore">
+      <ul>
+        <li v-for="(item, index) in goods" :key="index">
+          <a href="" :title="item.BookName">
+            <img :src="item.BookPic" alt="">
+            <a class="title" href="javascript:void(0);">{{ item.BookName | cutTitle(10) }}</a>
+            <div class="desc">
+              <div class="sell">
+                <span>{{ item.BookMprice }}</span><s>{{ item.BookPrice }}</s>
+              </div>
+              <div class="detail">
+                <div class="hot">热卖中</div>
+              </div>
+              <div class="count">
+                销量：{{ item.BookDealmount}}
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </mt-loadmore>
  </div>
 </template>
 <script>
@@ -27,14 +30,32 @@ export default {
   name: 'GoodsShow',
   data () {
     return {
-      goods: []
+      goods: [],
+      allLoaded: false,
+      autoFill: false,
+      page: this.$route.query.page
+    }
+  },
+  methods: {
+    loadBottom () {
+      this.page++
+      this.loadGoodsByPage()
+      console.log('上拉调用了')
+      this.$refs.loadmore.onBottomLoaded()
+    },
+    handleBottomChange (status) {
+      console.log(status)
+    },
+    loadGoodsByPage () {
+      this.$axios.get('getgoods.php?page=' + this.page).then(res => {
+        if (res.data.message) {
+          this.goods = this.page === 1 ? res.data.message : this.goods.concat(res.data.message)
+        }
+      }).catch(console.log)
     }
   },
   created () {
-    let { page } = this.$route.query
-    this.$axios.get('getgoods.php?page=' + page).then(res => {
-      this.goods = res.data.message
-    }).catch(console.log)
+    this.loadGoodsByPage()
   }
 }
 </script>
