@@ -5,7 +5,7 @@
     :bottom-all-loaded="allLoaded" :auto-fill="autoFill" ref="loadmore">
       <ul>
         <li v-for="(item, index) in goods" :key="index">
-          <a href="" :title="item.BookName">
+          <router-link :to="{ name: 'GoodsDetail', query: { BId: item.BookId } }" :title="item.BookName">
             <img :src="item.BookPic" alt="">
             <a class="title" href="javascript:void(0);">{{ item.BookName | cutTitle(10) }}</a>
             <div class="desc">
@@ -19,7 +19,7 @@
                 销量：{{ item.BookDealmount}}
               </div>
             </div>
-          </a>
+          </router-link>
         </li>
       </ul>
     </mt-loadmore>
