@@ -20,7 +20,7 @@
       <div class="box" @click="change('Shopcart')">
         <mt-tab-item id="Shopcart">
           <img slot="icon" src="../static/img/goodsShow.png">
-          购物车
+          购物车 <mt-badge size="small" type="error">{{ totalNum }}</mt-badge>
         </mt-tab-item>
       </div>
       <div class="box" @click="change('Search')">
@@ -34,11 +34,13 @@
 </template>
 
 <script>
+import MyBus from './MyBus'
 export default {
   name: 'App',
   data () {
     return {
-      selected: ''
+      selected: '',
+      totalNum: 0
     }
   },
   methods: {
@@ -48,6 +50,11 @@ export default {
         name: val
       })
     }
+  },
+  created () {
+    MyBus.$on('addShopCart', (num) => {
+      this.totalNum += num
+    })
   },
   watch: {
   }

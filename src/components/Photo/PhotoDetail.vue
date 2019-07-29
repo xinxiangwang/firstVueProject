@@ -11,7 +11,7 @@
    <div class="photo-desc">
      <p>{{ imgInfo.content }}</p>
    </div>
-    <comment :imgId="$route.params.id" />
+    <comment :id="$route.params.id" :post="post" :get="get"/>
  </div>
 </template>
 <script>
@@ -19,6 +19,8 @@ export default {
   name: 'PhotoDetail',
   data () {
     return {
+      post: 'postcomments.php',
+      get: 'getcomments.php',
       imgInfo: [],
       slide1: [
         {

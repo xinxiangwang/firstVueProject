@@ -2,29 +2,31 @@
  <div>
         <nav-bar title="商品详情"/>
         <div class="outer-swiper">
-            <div class="swiper">
-            </div>
+            <Swipe url="getlunbo.php"/>
         </div>
         <div class="product-desc">
             <ul>
                 <li><span class="product-desc-span">
                 </span></li>
                 <li class="price-li">市场价：
-                    <s></s> 销售价：<span></span></li>
-                <li class="number-li">购买数量：<span>-</span><span>1</span><span>+</span></li>
+                    <s>{{ goodsDetail.BookPrice }}</s> 销售价：<span>{{ goodsDetail.BookMprice }}</span>
+                </li>
+                <li class="number-li">购买数量：<span @click="subtract">-</span><span>{{ buyNum }}</span><span @click="add">+</span></li>
                 <li>
                     <mt-button type="primary">立即购买</mt-button>
-                    <mt-button type="danger">加入购物车</mt-button>
+                    <mt-button type="danger" @click="addShopCart" :disabled="buyNum == 0 ? true : false">加入购物车</mt-button>
                 </li>
             </ul>
         </div>
-            <div class="ball"></div>
+        <transition name="ball" @after-enter="afterEnter">
+            <div class="ball" v-if="isShow"></div>
+        </transition>
         <div class="product-props">
             <ul>
-                <li>商品参数</li>
-                <li>商品货号</li>
-                <li>库存情况</li>
-                <li>上架时间</li>
+                <li>商品参数：</li>
+                <li>商品货号：{{ goodsDetail.Bookisbn }}</li>
+                <li>成交量：{{ goodsDetail.BookDealmount }}</li>
+                <li>上架时间：{{ goodsDetail.BookPubDate }}</li>
             </ul>
         </div>
         <div class="product-info">
@@ -33,22 +35,70 @@
                     <mt-button type="primary" size="large" plain>图文介绍</mt-button>
                 </li>
                 <li>
-                    <mt-button type="danger" size="large" plain>商品评论</mt-button>
+                    <mt-button type="danger" size="large" plain @click="goGoodsComments()">商品评论</mt-button>
                 </li>
             </ul>
         </div>
     </div>
 </template>
 <script>
+import MyBus from '@/MyBus.js'
+import GoodsTools from '@/GoodsTools.js'
 export default {
   name: 'GoodsDetail',
   data () {
     return {
+      goodsId: this.$route.query.GId,
+      lunBoImg: [],
+      goodsDetail: {},
+      isShow: false,
+      buyNum: 0
+    }
+  },
+  created () {
+    let reqLunBo = this.$axios.get('getlunbo.php')
+    let reqGoodsDetail = this.$axios.get('getGoodsDetail.php?GId=' + this.goodsId)
+    // 强行用一下这个$axios.all 如果里面有一个没请求成功，则整体算请求失败
+    this.$axios.all([reqLunBo, reqGoodsDetail]).then(this.$axios.spread((reqLunBo, reqGoodsDetail) => {
+      this.lunBoImg = reqLunBo.data.message
+      this.goodsDetail = reqGoodsDetail.data.message[0]
+    })).catch(console.log)
+  },
+  methods: {
+    goGoodsComments () {
+      this.$router.push({
+        name: 'GoodsComments',
+        params: {
+          id: this.goodsId
+        }
+      })
+    },
+    subtract () {
+      this.buyNum = this.buyNum === 0 ? 0 : --this.buyNum
+    },
+    add () {
+      this.buyNum++
+    },
+    addShopCart () {
+      this.isShow = true
+    },
+    afterEnter () {
+      this.isShow = false
+      // 调用父组件的方法（下方购物车图标数量）
+      MyBus.$emit('addShopCart', this.buyNum)
+      // 添加到购物车后把值存起来
+      GoodsTools.addShopCart({
+        id: this.goodsDetail.BookId,
+        num: this.buyNum
+      })
     }
   }
 }
 </script>
 <style scoped>
+.ball-leave {
+  opacity: 0;
+}
 .ball-enter-active {
     animation: bounce-in 1s;
 }
@@ -145,8 +195,8 @@ export default {
     width: 24px;
     height: 24px;
     position: absolute;
-    top: 440px;
-    left: 120px;
+    bottom: 441px;
+    left: 128px;
     display: inline-block;
     z-index: 9999;
 }

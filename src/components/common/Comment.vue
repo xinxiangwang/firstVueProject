@@ -43,7 +43,7 @@ export default {
       disabled: false
     }
   },
-  props: ['imgId'],
+  props: ['id', 'post', 'get'],
   created () {
     this.loadMsgByPage()
   },
@@ -52,16 +52,15 @@ export default {
       this.page = 0
     },
     sendMsg () {
-      this.$axios.post('postcomments.php', {
-        img_id: this.imgId,
+      this.$axios.post(this.post, {
+        id: this.id,
         content: this.content
       }).then(res => {
-        this.loadMsgByPage()
-        this.init()
+        this.comments.unshift(res.data.data)
       }).catch(console.log)
     },
     loadMsgByPage () {
-      this.$axios.get(`getcomments.php?id=${this.imgId}&pageindex=${this.page}`).then(res => {
+      this.$axios.get(`${this.get}?id=${this.id}&pageindex=${this.page}`).then(res => {
         if (this.page === 0) {
           this.comments = res.data.message
         } else {
@@ -75,7 +74,6 @@ export default {
             this.disabled = true
           }
         }
-        console.log(this.comments)
         this.page++
       }).catch(console.log)
     }

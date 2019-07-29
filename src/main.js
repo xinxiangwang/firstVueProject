@@ -26,10 +26,12 @@ import MyUl from './components/common/MyUl'
 import MyLi from './components/common/MyLi'
 import NavBar from './components/common/NavBar'
 import Comment from './components/common/Comment'
+import Swipe from './components/common/Swipe'
 Vue.component(MyUl.name, MyUl)
 Vue.component(MyLi.name, MyLi)
 Vue.component(NavBar.name, NavBar)
 Vue.component(Comment.name, Comment)
+Vue.component(Swipe.name, Swipe)
 
 Moment.locale('zh-cn')
 // 定义时间格式过滤器 转换时间格式

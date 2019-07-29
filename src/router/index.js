@@ -10,6 +10,7 @@ import PhotoList from '@/components/Photo/PhotoList'
 import PhotoDetail from '@/components/Photo/PhotoDetail'
 import GoodsShow from '@/components/Goods/GoodsShow'
 import GoodsDetail from '@/components/Goods/GoodsDetail'
+import GoodsComments from '@/components/Goods/GoodsComments'
 Vue.use(Router)
 
 export default new Router({
@@ -55,7 +56,7 @@ export default new Router({
       component: PhotoDetail
     },
     {
-      path: '/goods/list/:page',
+      path: '/goods/list',
       name: 'GoodsShow',
       component: GoodsShow
     },
@@ -63,6 +64,11 @@ export default new Router({
       path: '/goods/detail',
       name: 'GoodsDetail',
       component: GoodsDetail
+    },
+    {
+      path: '/goods/comments',
+      name: 'GoodsComments',
+      component: GoodsComments
     }
   ]
 })

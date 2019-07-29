@@ -2,11 +2,7 @@
   <div class="hello">
 
     <!-- 轮播图S -->
-    <mt-swipe :auto='4000'>
-      <mt-swipe-item v-for = "(item, index) in imgs " :key = index>
-        <img :src="item.img_url" alt="">
-      </mt-swipe-item>
-    </mt-swipe>
+    <Swipe url="getlunbo.php" />
     <!-- 轮播图E -->
 
     <!-- 九宫格S -->
@@ -72,24 +68,12 @@ export default {
         }
       ]
     }
-  },
-  created () {
-    this.$axios.get('getlunbo.php').then(res => {
-      this.imgs = res.data.message
-    }).catch(err => console.log(err))
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.mint-swipe {
-  width: 100%;
-  height: 200px;
-}
-.mint-swipe img {
-  width: 100%;
-}
 /* 九宫格样式 */
 .grid span {
   display: inline-block;
