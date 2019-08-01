@@ -3,16 +3,16 @@
         <nav-bar title="购物车"/>
         <div class="pay-detail">
             <ul>
-                <li class="p-list">
-                    <mt-switch></mt-switch>
-                    <img src="">
+                <li class="p-list" v-for="books in shopcart" :key="books.BookId">
+                    <mt-switch v-model="books.isSelected"></mt-switch>
+                    <img :src="books.BookPic">
                     <div class="pay-calc">
-                        <p></p>
+                        <p>{{ books.BookName | cutTitle(15) }}</p>
                         <div class="calc">
-                            <span></span>
-                            <span>-</span>
-                            <span></span>
-                            <span>+</span>
+                            <span>${{ books.BookPrice }}</span>
+                            <span @click="subtract(books)">-</span>
+                            <span>{{ books.buyNum }}</span>
+                            <span @click="add(books)">+</span>
                             <a href="javascript:;">删除</a>
                         </div>
                     </div>
@@ -32,8 +32,36 @@
 </template>
 <script>
 export default {
-  created () {
-    let url = Object.keys(test.goodsList).join(',')
+  name: 'ShopCart',
+  data () {
+    return {
+      shopcart: [],
+      test: window.test
+    }
+  },
+  async created () {
+    let url = 'getShopCart.php?id=' + Object.keys(window.test.goodsList).join(',')
+    this.shopcart = (await this.$axios.get(url)).data.message
+    for (let i = 0; i < this.shopcart.length; i++) {
+      let book = this.shopcart[i]
+      let num = this.test.goodsList[book.BookId]
+      if (num) {
+        // 用下面两个方法添加属性，赋值后  属性值改变时并不会出发视图更新
+        // book.buyNum = num
+        // book.isSelected = false
+        this.$set(book, 'buyNum', num)
+        this.$set(book, 'isSelected', true)
+      }
+    }
+    console.log(this.shopcart)
+  },
+  methods: {
+    subtract (books) {
+      books.buyNum--
+    },
+    add (books) {
+      books.buyNum++
+    }
   }
 }
 </script>
