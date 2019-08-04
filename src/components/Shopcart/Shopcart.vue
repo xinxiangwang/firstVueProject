@@ -3,17 +3,17 @@
         <nav-bar title="购物车"/>
         <div class="pay-detail">
             <ul>
-                <li class="p-list" v-for="books in shopcart" :key="books.BookId">
+                <li class="p-list" v-for="(books, index) in shopcart" :key="books.BookId">
                     <mt-switch v-model="books.isSelected"></mt-switch>
                     <img :src="books.BookPic">
                     <div class="pay-calc">
                         <p>{{ books.BookName | cutTitle(15) }}</p>
                         <div class="calc">
                             <span>${{ books.BookPrice }}</span>
-                            <span @click="subtract(books)">-</span>
+                            <span @click="subtract(books, books.BookId)">-</span>
                             <span>{{ books.buyNum }}</span>
-                            <span @click="add(books)">+</span>
-                            <a href="javascript:;">删除</a>
+                            <span @click="add(books, books.BookId)">+</span>
+                            <a href="javascript:;" @click="del(books, index)">删除</a>
                         </div>
                     </div>
                 </li>
@@ -22,7 +22,7 @@
         <div class="show-price">
             <div class="show-1">
                 <p>总计(不含运费):</p>
-                <span>已经选择商品件，总价￥元</span>
+                <span>已经选择商品件，总价￥{{ totalPrice.price }}元</span>
             </div>
             <div class="show-2">
                 <mt-button type="danger" size="large">去结算</mt-button>
@@ -31,12 +31,12 @@
     </div>
 </template>
 <script>
+import MyBus from '@/MyBus.js'
 export default {
   name: 'ShopCart',
   data () {
     return {
-      shopcart: [],
-      test: window.test
+      shopcart: []
     }
   },
   async created () {
@@ -44,7 +44,7 @@ export default {
     this.shopcart = (await this.$axios.get(url)).data.message
     for (let i = 0; i < this.shopcart.length; i++) {
       let book = this.shopcart[i]
-      let num = this.test.goodsList[book.BookId]
+      let num = window.test.goodsList[book.BookId]
       if (num) {
         // 用下面两个方法添加属性，赋值后  属性值改变时并不会出发视图更新
         // book.buyNum = num
@@ -55,12 +55,52 @@ export default {
     }
     console.log(this.shopcart)
   },
+  // beforeRouteLeave (to, from, next) {
+  //   let result = confirm('确定离开吗')
+  //   if (result) {
+  //     // 保存编辑后的数据
+  //     let total = Object.values(window.test.goodsList).reduce(
+  //       (prev, cur) => prev + cur
+  //     )
+  //   } else {
+  //     next(false)
+  //   }
+  // },
   methods: {
-    subtract (books) {
-      books.buyNum--
+    subtract (books, BookId) {
+      if (books.buyNum <= 0) {
+        books.buyNum = 0
+      } else {
+        books.buyNum--
+        window.test.goodsList[books.BookId]--
+        MyBus.$emit('addShopCart', -1)
+      }
     },
-    add (books) {
+    add (books, BookId) {
       books.buyNum++
+      window.test.goodsList[books.BookId]++
+      MyBus.$emit('addShopCart', 1)
+    },
+    del (books, index) {
+      this.shopcart.splice(index, 1)
+      MyBus.$emit('addShopCart', -window.test.goodsList[books.BookId])
+      delete window.test.goodsList[books.BookId]
+    }
+  },
+  computed: {
+    totalPrice () {
+      let count = 0
+      let price = 0
+      this.shopcart.forEach(books => {
+        if (books.isSelected) {
+          count += books.buyNum
+          price += books.buyNum * books.BookPrice
+        }
+      })
+      return {
+        count,
+        price
+      }
     }
   }
 }

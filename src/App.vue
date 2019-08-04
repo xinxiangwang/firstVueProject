@@ -52,8 +52,13 @@ export default {
     }
   },
   created () {
+    // 商品详情页 添加到购物车触发小球 商品数量变化
     MyBus.$on('addShopCart', (num) => {
       this.totalNum += num
+    })
+    // 购物车页面 加减商品触发小球 商品数量变化
+    MyBus.$on('editShopCart', (num) => {
+      num ? this.totalNum++ : this.totalNum--
     })
   },
   watch: {
