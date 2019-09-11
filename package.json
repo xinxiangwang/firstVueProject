@@ -2,7 +2,7 @@
   "name": "cms_project_4",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "",
+  "author": "1104642244@qq.com",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --open --config build/webpack.dev.conf.js",
