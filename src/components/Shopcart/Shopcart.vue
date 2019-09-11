@@ -40,17 +40,20 @@ export default {
     }
   },
   async created () {
-    let url = 'getShopCart.php?id=' + Object.keys(window.test.goodsList).join(',')
-    this.shopcart = (await this.$axios.get(url)).data.message
-    for (let i = 0; i < this.shopcart.length; i++) {
-      let book = this.shopcart[i]
-      let num = window.test.goodsList[book.BookId]
-      if (num) {
-        // 用下面两个方法添加属性，赋值后  属性值改变时并不会出发视图更新
-        // book.buyNum = num
-        // book.isSelected = false
-        this.$set(book, 'buyNum', num)
-        this.$set(book, 'isSelected', true)
+    if (window.test.goodsList === 'undefined') {
+      let url = 'getShopCart.php?id=' + Object.keys(window.test.goodsList).join(',')
+      this.shopcart = (await this.$axios.get(url)).data.message
+      console.log(this.shopcart)
+      for (let i = 0; i < this.shopcart.length; i++) {
+        let book = this.shopcart[i]
+        let num = window.test.goodsList[book.BookId]
+        if (num) {
+          // 用下面两个方法添加属性，赋值后  属性值改变时并不会出发视图更新
+          // book.buyNum = num
+          // book.isSelected = false
+          this.$set(book, 'buyNum', num)
+          this.$set(book, 'isSelected', true)
+        }
       }
     }
     console.log(this.shopcart)
@@ -71,9 +74,9 @@ export default {
       if (books.buyNum <= 0) {
         books.buyNum = 0
       } else {
-        books.buyNum--
-        window.test.goodsList[books.BookId]--
-        MyBus.$emit('addShopCart', -1)
+        books.buyNum-- // 控制这个页面数量变换
+        window.test.goodsList[books.BookId]-- // 控制全局对象中的数据变换
+        MyBus.$emit('addShopCart', -1) // 控制app.vue中的红色小球变换
       }
     },
     add (books, BookId) {

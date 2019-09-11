@@ -15,7 +15,7 @@ import Axios from 'axios'
 // 引入全局样式
 import '../static/css/global.css'
 
-// 定义全局过滤器
+// 定义全局时间过滤器
 import Moment from 'moment'
 
 // 引入图片预览插件

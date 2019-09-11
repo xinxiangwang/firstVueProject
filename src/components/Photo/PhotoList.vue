@@ -5,14 +5,14 @@
      <ul>
       <li v-for="(item, index) in imgCategory" :key="index">
         <a href="javascript:;" @click="routeChange(item.id)" :class="c_id == item.id ? 'active' : ''">{{ item.category }}</a>
-        </li>
+      </li>
      </ul>
    </div>
    <div class="photo-list">
      <ul>
        <li v-for="(item, index) in imgs" :key="index">
          <router-link :to="{ name: 'PhotoDetail', params: { id: item.id } }">
-           <img v-if="$route.query.categoryId === 0" v-lazy="item.img_url">
+           <img v-if="$route.params.categoryId == 0" v-lazy="item.img_url">
            <img v-else :src="item.img_url" alt="">
            <p>
              <span>{{ item.title }}</span>
@@ -40,13 +40,13 @@ export default {
       console.log(id)
       this.$router.push({
         name: 'PhotoList',
-        query: { categoryId: id }
+        params: { categoryId: id }
       })
     }
   },
   beforeRouteUpdate (to, from, next) {
     // 把每次变化的路由参数保存起来
-    this.c_id = to.query.categoryId
+    this.c_id = to.params.categoryId
     this.$axios.get('getimages.php?id=' + this.c_id).then(res => {
       this.imgs = res.data.message
     }).catch(err => { console.log(err) })
@@ -54,11 +54,11 @@ export default {
   },
   created () {
     // 解决图片懒加载缓存bug
-    if (this.$route.query.categoryId === 0) {
+    if (this.$route.params.categoryId === 0) {
       this.imgs = []
     }
 
-    this.$axios.get('getimages.php?id=' + this.$route.query.categoryId).then(res => {
+    this.$axios.get('getimages.php?id=' + this.$route.params.categoryId).then(res => {
       this.imgs = res.data.message
     }).catch(err => { console.log(err) })
 

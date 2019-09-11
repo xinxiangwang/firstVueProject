@@ -25,14 +25,12 @@ export default {
   name: 'Home',
   data () {
     return {
-      imgs: [],
       modules: [
         {
           title: '新闻资讯',
           className: 'back-news',
           route: {
-            name: 'NewsList',
-            query: { categoryId: 0 }
+            name: 'NewsList'
           }
         },
         {

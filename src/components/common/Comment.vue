@@ -6,7 +6,7 @@
           <div>
             <span>提交评论</span>
             <span>
-              <a href="">返回</a>
+              <a @click="$router.go(-1)">返回</a>
             </span>
           </div>
         </li>
@@ -19,7 +19,7 @@
         <li class="photo-comment">
           <div>
             <span>评论列表</span>
-            <span>44条评论</span>
+            <span>{{ comments.length }}条评论</span>
           </div>
         </li>
       </ul>
@@ -57,6 +57,7 @@ export default {
         content: this.content
       }).then(res => {
         this.comments.unshift(res.data.data)
+        console.log(res)
       }).catch(console.log)
     },
     loadMsgByPage () {

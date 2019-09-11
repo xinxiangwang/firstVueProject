@@ -5,7 +5,7 @@
     :bottom-all-loaded="allLoaded" :auto-fill="autoFill" ref="loadmore">
       <ul>
         <li v-for="(item, index) in goods" :key="index">
-          <router-link :to="{ name: 'GoodsDetail', query: { GId: item.BookId } }" :title="item.BookName">
+          <router-link :to="{ name: 'GoodsDetail', query: { GId: item.BookId } }">
             <img :src="item.BookPic" alt="">
             <a class="title" href="javascript:void(0);">{{ item.BookName | cutTitle(10) }}</a>
             <div class="desc">
@@ -41,7 +41,7 @@ export default {
       this.page++
       this.loadGoodsByPage()
       console.log('上拉调用了')
-      this.$refs.loadmore.onBottomLoaded()
+      this.$refs.loadmore.onBottomLoaded() // 加载数据后需要对组件进行一些重新定位的操作
     },
     handleBottomChange (status) {
       console.log(status)

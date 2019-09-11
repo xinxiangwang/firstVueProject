@@ -4,9 +4,9 @@
         <div class="news-title">
             <p>{{newsInfo.title}}</p>
             <div>
-                <span>{{newsInfo.click}}次点击</span>
-                <span>分类:新闻</span>
-                <span>添加时间:{{newsInfo.add_time | convertTime('YYYY-MM-DD')}}</span>
+                <span v-show="isShow">{{newsInfo.click}}次点击</span>
+                <span v-show="isShow">分类:新闻</span>
+                <span v-show="isShow">添加时间:{{newsInfo.add_time | convertTime('YYYY-MM-DD')}}</span>
             </div>
         </div>
         <div class="news-content" v-text="newsInfo.content"></div>
@@ -17,7 +17,8 @@ export default {
   name: 'NewsDetail',
   data () {
     return {
-      newsInfo: []
+      newsInfo: [],
+      isShow: false
     }
   },
   created () {
@@ -26,6 +27,7 @@ export default {
     this.$axios.get(url).then(res => {
       console.log(res)
       this.newsInfo = res.data.message[0]
+      this.isShow = true
     })
   }
 }

@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
-import Member from '@/components/Member/Member'
-import Search from '@/components/Search/Search'
-import Shopcart from '@/components/Shopcart/Shopcart'
-import NewsList from '@/components/News/NewsList'
-import NewsDetail from '@/components/News/NewsDetail'
-import PhotoList from '@/components/Photo/PhotoList'
-import PhotoDetail from '@/components/Photo/PhotoDetail'
-import GoodsShow from '@/components/Goods/GoodsShow'
-import GoodsDetail from '@/components/Goods/GoodsDetail'
-import GoodsComments from '@/components/Goods/GoodsComments'
+
+// 优化首页加载速度 没有必要加载所有组件(路由懒加载)
+const Home = () => import('@/components/Home')
+const Member = () => import('@/components/Member/Member')
+const Search = () => import('@/components/Search/Search')
+const Shopcart = () => import('@/components/Shopcart/Shopcart')
+const NewsList = () => import('@/components/News/NewsList')
+const NewsDetail = () => import('@/components/News/NewsDetail')
+const PhotoList = () => import('@/components/Photo/PhotoList')
+const PhotoDetail = () => import('@/components/Photo/PhotoDetail')
+const GoodsShow = () => import('@/components/Goods/GoodsShow')
+const GoodsDetail = () => import('@/components/Goods/GoodsDetail')
+const GoodsComments = () => import('@/components/Goods/GoodsComments')
 Vue.use(Router)
 
 export default new Router({
@@ -46,7 +48,7 @@ export default new Router({
       component: NewsDetail
     },
     {
-      path: '/photo/list',
+      path: '/photo/list/:categoryId',
       name: 'PhotoList',
       component: PhotoList
     },
